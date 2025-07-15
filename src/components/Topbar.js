@@ -10,7 +10,7 @@ export default function Topbar() {
         <Link href="/" className="group">
           <div className="flex items-center gap-4 transition-transform group-hover:scale-105">
             <Image
-              src="/naturaleza-w1.png"
+              src="https://res.cloudinary.com/dy8q4hf0k/image/upload/v1752601311/naturalesa-w1_vdd6fh.png"
               alt="Amazonia Logo"
               width={160}
               height={160}

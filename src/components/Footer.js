@@ -8,14 +8,14 @@ export default function Footer() {
         {/* Logo and Description */}
         <div className="flex flex-col items-center md:items-start text-center md:text-left gap-2">
           <Image
-            src="/natureza.png"
+            src="https://res.cloudinary.com/dy8q4hf0k/image/upload/v1752601471/natureza_juyudn.png"
             alt="Amazonia Logo"
             width={60}
             height={60}
             className="mb-2"
           />
           <span className="text-lg font-bold text-green-900">
-            Amazonia Incense
+            Natureza Incense
           </span>
           <span className="text-sm text-gray-600 max-w-xs">
             Sacred tools and incense from the Amazon. Ethically sourced,
