@@ -22,11 +22,23 @@ export default function OrderForm({ productName }) {
     setShowForm(false);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    // TODO: handle order submission
-    alert("Order submitted! (not yet implemented)");
-    setShowForm(false);
+    try {
+      const res = await fetch("/api/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, productName }),
+      });
+      if (res.ok) {
+        alert("Order submitted! We'll contact you soon.");
+        setShowForm(false);
+      } else {
+        alert("There was an error sending your order. Please try again.");
+      }
+    } catch (err) {
+      alert("There was an error sending your order. Please try again.");
+    }
   }
 
   return (
