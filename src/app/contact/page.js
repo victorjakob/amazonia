@@ -70,7 +70,7 @@ export default function Contact() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.7, ease: "easeOut" }}
         >
-          We&aposd love to hear from you! For questions, custom orders, or
+          We&apos;d love to hear from you! For questions, custom orders, or
           partnership inquiries, please fill out the form below or email us
           directly.
         </motion.p>
