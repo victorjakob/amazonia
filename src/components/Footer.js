@@ -45,7 +45,7 @@ export default function Footer() {
         </nav>
       </div>
       <div className="mt-8 text-center text-xs text-gray-500">
-        &copy; {new Date().getFullYear()} Amazonia Incense. All rights reserved.
+        &copy; {new Date().getFullYear()} Natureza Incense. All rights reserved.
       </div>
     </footer>
   );
