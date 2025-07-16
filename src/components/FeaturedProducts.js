@@ -33,7 +33,7 @@ export default function FeaturedProducts({ products }) {
         {products.map((product) => (
           <motion.div
             key={product.id}
-            className="bg-white dark:bg-green-900 rounded-lg shadow-md p-5 flex flex-col items-center group border border-green-100 dark:border-green-900"
+            className="bg-white rounded-lg shadow-md p-5 flex flex-col items-center group border border-green-100"
             variants={item}
           >
             <div className="relative h-48 w-full mb-4 rounded-lg overflow-hidden">
@@ -44,18 +44,23 @@ export default function FeaturedProducts({ products }) {
                 className="object-contain rounded-md transition-transform duration-300 group-hover:scale-105"
               />
             </div>
-            <h3 className="text-xl font-semibold mb-2 text-green-900 dark:text-green-100 text-center">
+            <h3 className="text-xl font-semibold mb-2 text-green-900 text-center">
               {product.name}
             </h3>
-            <p className="text-sm text-gray-700 dark:text-gray-300 mb-4 text-center line-clamp-3">
+            <p className="text-sm text-gray-700 mb-4 text-center line-clamp-3">
               {product.description}
             </p>
-            <div className="text-green-800 dark:text-green-300 font-bold text-lg mb-3">
-              ${(product.price / 100).toFixed(2)}
+            <div className="text-green-800 font-bold text-lg mb-3">
+              {new Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              }).format(product.price)}
             </div>
             <Link
               href={`/store/${product.id}`}
-              className="inline-block text-green-700 dark:text-green-300 hover:underline font-medium"
+              className="inline-block text-green-700 hover:underline font-medium"
             >
               Shop Now →
             </Link>
