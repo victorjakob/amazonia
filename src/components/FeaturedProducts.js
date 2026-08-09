@@ -1,69 +1,33 @@
 "use client";
-import Image from "next/image";
-import Link from "next/link";
+
 import { motion } from "framer-motion";
+import ProductTile, { tileVariants } from "./ProductTile";
 
 const container = {
   hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.15,
-    },
-  },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 40 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
+  show: { transition: { staggerChildren: 0.14 } },
 };
 
 export default function FeaturedProducts({ products }) {
   return (
-    <section className="max-w-6xl mx-auto py-20 px-4">
-      <h2 className="text-3xl font-bold text-center mb-10">
-        Featured Offerings
-      </h2>
+    <section className="u-shell py-24 lg:py-32">
+      <header className="flex flex-col items-center text-center">
+        <span aria-hidden="true" className="u-rule mb-8" />
+        <h2 className="font-display text-[clamp(2rem,4vw,3.25rem)] font-light leading-tight text-forest-800">
+          Featured Offerings
+        </h2>
+      </header>
+
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10"
+        className="mt-16 grid grid-cols-1 gap-x-10 gap-y-16 sm:grid-cols-2 md:grid-cols-3"
         variants={container}
         initial="hidden"
         whileInView="show"
-        viewport={{ once: true, amount: 0.3 }}
+        viewport={{ once: true, amount: 0.2 }}
       >
         {products.map((product) => (
-          <motion.div
-            key={product.id}
-            className="bg-white rounded-lg shadow-md p-5 flex flex-col items-center group border border-green-100"
-            variants={item}
-          >
-            <div className="relative h-48 w-full mb-4 rounded-lg overflow-hidden">
-              <Image
-                src={product.image}
-                alt={product.name}
-                fill
-                className="object-contain rounded-md transition-transform duration-300 group-hover:scale-105"
-              />
-            </div>
-            <h3 className="text-xl font-semibold mb-2 text-green-900 text-center">
-              {product.name}
-            </h3>
-            <p className="text-sm text-gray-700 mb-4 text-center line-clamp-3">
-              {product.description}
-            </p>
-            <div className="text-green-800 font-bold text-lg mb-3">
-              {new Intl.NumberFormat("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-              }).format(product.price)}
-            </div>
-            <Link
-              href={`/store/${product.id}`}
-              className="inline-block text-green-700 hover:underline font-medium"
-            >
-              Shop Now →
-            </Link>
+          <motion.div key={product.id} variants={tileVariants}>
+            <ProductTile product={product} animate="none" />
           </motion.div>
         ))}
       </motion.div>

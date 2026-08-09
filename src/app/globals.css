@@ -1,22 +1,228 @@
 @import "tailwindcss";
 
-:root {
-  --background: #f5fbfa;
-  ;
-  --foreground: #171717;
-  --font-sans: var(--font-open-sans);
+/* ------------------------------------------------------------------
+   Amazonia — editorial botanical design tokens
+   ------------------------------------------------------------------ */
+@theme {
+  /* Surfaces */
+  --color-paper: #fbfaf7;
+  --color-sand: #f3efe7;
+  --color-sand-deep: #e9e2d5;
+
+  /* Ink */
+  --color-ink: #14261c;
+  --color-ink-soft: #3d4f44;
+  --color-muted: #6f7d73;
+
+  /* Forest */
+  --color-forest-900: #0d1f17;
+  --color-forest-800: #143026;
+  --color-forest-700: #1c4433;
+  --color-forest-600: #275a44;
+  --color-forest-500: #35735a;
+
+  /* Accent */
+  --color-amber: #b0763a;
+  --color-amber-soft: #c9a06a;
+  --color-amber-pale: #ecdcc4;
+
+  /* Hairlines */
+  --color-line: #e4ded2;
+  --color-line-strong: #cec6b5;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-open-sans);
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body-sans), ui-sans-serif, system-ui, -apple-system,
+      "Segoe UI", sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    font-weight: 400;
+  }
+
+  ::selection {
+    background: var(--color-amber-pale);
+    color: var(--color-forest-900);
+  }
+
+  a,
+  button,
+  input,
+  textarea,
+  select,
+  [tabindex]:not([tabindex="-1"]) {
+    &:focus-visible {
+      outline: 2px solid var(--color-amber);
+      outline-offset: 3px;
+    }
+  }
 }
 
+@layer components {
+  /* Page gutter — one consistent measure across the whole site */
+  .u-shell {
+    width: 100%;
+    max-width: 78rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+  .u-shell-narrow {
+    width: 100%;
+    max-width: 46rem;
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+  @media (min-width: 1024px) {
+    .u-shell,
+    .u-shell-narrow {
+      padding-inline: 2.5rem;
+    }
+  }
 
+  /* Display serif */
+  .font-display {
+    font-family: var(--font-display-serif), Georgia, "Times New Roman", serif;
+    font-weight: 400;
+    letter-spacing: -0.012em;
+  }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), 'Open Sans', Arial, Helvetica, sans-serif;
+  /* Small tracked label, used on eyebrow-scale text */
+  .u-tracked {
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-size: 0.6875rem;
+    font-weight: 500;
+  }
+
+  /* Decorative hairline divider */
+  .u-rule {
+    display: block;
+    width: 3.5rem;
+    height: 1px;
+    background: var(--color-amber-soft);
+  }
+
+  /* Buttons ------------------------------------------------------- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    padding: 1rem 2.25rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    line-height: 1;
+    border: 1px solid transparent;
+    transition: background-color 0.3s ease, color 0.3s ease,
+      border-color 0.3s ease, transform 0.3s ease;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  .btn-primary {
+    background: var(--color-forest-800);
+    color: var(--color-paper);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--color-forest-600);
+  }
+
+  .btn-light {
+    background: var(--color-paper);
+    color: var(--color-forest-900);
+  }
+  .btn-light:hover:not(:disabled) {
+    background: var(--color-amber-pale);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--color-forest-800);
+    border-color: var(--color-line-strong);
+  }
+  .btn-outline:hover:not(:disabled) {
+    border-color: var(--color-forest-800);
+    background: var(--color-sand);
+  }
+
+  /* Animated text link ------------------------------------------- */
+  .u-link {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 2px;
+  }
+  .u-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .u-link:hover::after,
+  .group:hover .u-link::after {
+    transform: scaleX(1);
+  }
+
+  /* Form fields --------------------------------------------------- */
+  .field {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid var(--color-line);
+    padding: 0.875rem 1rem;
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  .field::placeholder {
+    color: var(--color-muted);
+  }
+  .field:focus {
+    outline: none;
+    border-color: var(--color-forest-600);
+    box-shadow: 0 0 0 3px rgba(39, 90, 68, 0.1);
+  }
+
+  .field-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--color-ink-soft);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

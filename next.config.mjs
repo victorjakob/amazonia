@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["res.cloudinary.com", "cmqoetecaasivfzxgnxe.supabase.co"],
+    remotePatterns: [
+      { protocol: "https", hostname: "res.cloudinary.com" },
+      { protocol: "https", hostname: "xsylgitzcqbmjbrmpcsy.supabase.co" },
+    ],
   },
 };
 

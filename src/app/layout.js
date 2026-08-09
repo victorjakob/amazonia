@@ -1,12 +1,19 @@
-import { Open_Sans } from "next/font/google";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import Topbar from "../components/Topbar";
 import Footer from "../components/Footer";
 
-const openSans = Open_Sans({
-  variable: "--font-open-sans",
+const bodySans = Inter({
+  variable: "--font-body-sans",
   subsets: ["latin"],
-  weight: ["300", "400", "600", "700", "800"],
+  display: "swap",
+});
+
+const displaySerif = Cormorant_Garamond({
+  variable: "--font-display-serif",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  display: "swap",
 });
 
 export const metadata = {
@@ -61,12 +68,18 @@ export const metadata = {
   },
 };
 
+export const viewport = {
+  themeColor: "#0d1f17",
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${openSans.variable} antialiased`}>
+      <body
+        className={`${bodySans.variable} ${displaySerif.variable} min-h-screen flex flex-col bg-paper text-ink antialiased`}
+      >
         <Topbar />
-        {children}
+        <main className="flex-1">{children}</main>
         <Footer />
       </body>
     </html>

@@ -1,19 +1,16 @@
 "use client";
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 
 const container = {
   hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.15,
-    },
-  },
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.25 } },
 };
 
 const item = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
+  hidden: { opacity: 0, y: 22 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.65, ease: "easeOut" } },
 };
 
 export default function Contact() {
@@ -49,113 +46,119 @@ export default function Contact() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-50 to-white py-16 px-4">
-      <motion.div
-        className="w-full max-w-xl bg-white rounded-2xl shadow-xl p-10 border border-green-100"
-        initial={{ opacity: 0, y: 40 }}
+    <div className="u-shell-narrow py-20 lg:py-28">
+      <motion.header
+        className="flex flex-col items-center text-center"
+        initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        <motion.h1
-          className="text-4xl font-extrabold text-green-900 mb-2 text-center tracking-tight"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.7, ease: "easeOut" }}
-        >
+        <span aria-hidden="true" className="u-rule mb-8" />
+        <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] font-light leading-tight text-forest-800">
           Contact Us
-        </motion.h1>
-        <motion.p
-          className="text-lg text-gray-700 mb-6 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.7, ease: "easeOut" }}
-        >
+        </h1>
+        <p className="mt-6 max-w-lg text-[1.0625rem] leading-[1.8] text-ink-soft">
           We&apos;d love to hear from you! For questions, custom orders, or
           partnership inquiries, please fill out the form below or email us
           directly.
-        </motion.p>
-        <motion.div
-          className="mb-8 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.7, ease: "easeOut" }}
-        >
-          <div className="text-sm text-gray-500">
-            Email:{" "}
-            <a
-              href="mailto:contact@amazonia-natureza.org"
-              className="text-green-700 hover:underline font-medium"
-            >
-              contact@amazonia-natureza.org
-            </a>
-          </div>
-        </motion.div>
-        <motion.form
-          className="flex flex-col gap-5"
-          onSubmit={handleSubmit}
-          variants={container}
-          initial="hidden"
-          animate="show"
-        >
-          <motion.input
-            type="text"
-            placeholder="Your Name"
-            className="border border-green-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 p-3 rounded-lg transition outline-none text-gray-900"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            variants={item}
-          />
-          <motion.input
-            type="email"
-            placeholder="Your Email"
-            className="border border-green-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 p-3 rounded-lg transition outline-none text-gray-900"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            variants={item}
-          />
-          <motion.textarea
-            placeholder="Your Message"
-            className="border border-green-200 focus:border-green-500 focus:ring-2 focus:ring-green-100 p-3 rounded-lg transition outline-none text-gray-900 resize-none"
-            rows={5}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            required
-            variants={item}
-          ></motion.textarea>
-          <motion.button
+        </p>
+        <p className="mt-6">
+          <a
+            href="mailto:contact@amazonia-natureza.org"
+            className="u-link text-[0.9375rem] text-forest-700 transition-colors duration-300 hover:text-amber"
+          >
+            contact@amazonia-natureza.org
+          </a>
+        </p>
+      </motion.header>
+
+      <motion.form
+        className="mt-14 border-t border-line pt-12"
+        onSubmit={handleSubmit}
+        variants={container}
+        initial="hidden"
+        animate="show"
+      >
+        <div className="space-y-6">
+          <motion.div variants={item}>
+            <label className="field-label" htmlFor="contact-name">
+              Your Name
+            </label>
+            <input
+              id="contact-name"
+              type="text"
+              autoComplete="name"
+              className="field"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </motion.div>
+
+          <motion.div variants={item}>
+            <label className="field-label" htmlFor="contact-email">
+              Your Email
+            </label>
+            <input
+              id="contact-email"
+              type="email"
+              autoComplete="email"
+              className="field"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </motion.div>
+
+          <motion.div variants={item}>
+            <label className="field-label" htmlFor="contact-message">
+              Your Message
+            </label>
+            <textarea
+              id="contact-message"
+              className="field resize-none"
+              rows={6}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              required
+            />
+          </motion.div>
+        </div>
+
+        <motion.div variants={item} className="mt-9">
+          <button
             type="submit"
-            className="mt-2 bg-gradient-to-r from-green-600 to-green-700 text-white py-3 rounded-lg font-semibold text-lg shadow-md hover:from-green-700 hover:to-green-800 transition disabled:opacity-60"
+            className="btn btn-primary w-full sm:w-auto sm:min-w-64"
             disabled={loading}
-            variants={item}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
           >
             {loading ? "Sending..." : "Send Message"}
-          </motion.button>
-          {status === "success" && (
-            <motion.div
-              className="text-green-700 text-center font-medium mt-2"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              Thank you! Your message has been sent.
-            </motion.div>
-          )}
-          {status === "error" && (
-            <motion.div
-              className="text-red-600 text-center font-medium mt-2"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              Something went wrong. Please try again.
-            </motion.div>
-          )}
-        </motion.form>
-      </motion.div>
-    </main>
+          </button>
+        </motion.div>
+
+        {status === "success" && (
+          <motion.p
+            role="status"
+            className="mt-7 border border-forest-600/25 bg-sand px-5 py-4 text-center text-[0.9375rem] text-forest-700"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            Thank you! Your message has been sent.
+          </motion.p>
+        )}
+
+        {status === "error" && (
+          <motion.p
+            role="alert"
+            className="mt-7 border border-red-200 bg-red-50 px-5 py-4 text-center text-[0.9375rem] text-red-700"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            Something went wrong. Please try again.
+          </motion.p>
+        )}
+      </motion.form>
+    </div>
   );
 }

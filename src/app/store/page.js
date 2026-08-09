@@ -1,4 +1,5 @@
 export const revalidate = 60;
+
 import { supabase } from "@/utils/supabaseClient";
 import ProductCard from "./components/ProductCard";
 
@@ -16,13 +17,17 @@ export default async function StorePage() {
   const products = await getProducts();
 
   return (
-    <div className="max-w-7xl mx-auto py-16 px-6">
-      <h1 className="text-4xl font-light mb-12 text-center text-black  tracking-wider">
-        Our Products
-      </h1>
-      <div className="grid gap-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-        {products.map((product, i) => (
-          <ProductCard key={product.id} product={product} index={i} />
+    <div className="u-shell py-20 lg:py-28">
+      <header className="flex flex-col items-center text-center">
+        <span aria-hidden="true" className="u-rule mb-8" />
+        <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] font-light leading-tight text-forest-800">
+          Our Products
+        </h1>
+      </header>
+
+      <div className="mt-16 grid grid-cols-1 gap-x-10 gap-y-16 sm:grid-cols-2 md:grid-cols-3">
+        {products.map((product, index) => (
+          <ProductCard key={product.id} product={product} index={index} />
         ))}
       </div>
     </div>

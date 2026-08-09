@@ -1,29 +1,58 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+
+const EMPTY_FORM = {
+  email: "",
+  quantity: 1,
+  message: "",
+  country: "",
+  address: "",
+};
 
 export default function OrderForm({ productName }) {
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({
-    email: "",
-    quantity: 1,
-    message: "",
-    country: "",
-    address: "",
-  });
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [status, setStatus] = useState(null); // null | "success" | "error"
+  const [loading, setLoading] = useState(false);
+
+  const firstFieldRef = useRef(null);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
   function handleOpen() {
+    setStatus(null);
     setShowForm(true);
   }
+
   function handleClose() {
     setShowForm(false);
   }
 
+  // Escape to dismiss, and lock the page behind the dialog.
+  useEffect(() => {
+    if (!showForm) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => {
+      if (e.key === "Escape") setShowForm(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const focusTimer = setTimeout(() => firstFieldRef.current?.focus(), 120);
+    return () => {
+      document.body.style.overflow = previous;
+      window.removeEventListener("keydown", onKey);
+      clearTimeout(focusTimer);
+    };
+  }, [showForm]);
+
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
+    setStatus(null);
     try {
       const res = await fetch("/api/order", {
         method: "POST",
@@ -31,33 +60,34 @@ export default function OrderForm({ productName }) {
         body: JSON.stringify({ ...form, productName }),
       });
       if (res.ok) {
-        alert("Order submitted! We'll contact you soon.");
-        setShowForm(false);
+        setStatus("success");
+        setForm(EMPTY_FORM);
       } else {
-        alert("There was an error sending your order. Please try again.");
+        setStatus("error");
       }
-    } catch (err) {
-      alert("There was an error sending your order. Please try again.");
+    } catch {
+      setStatus("error");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className="w-full flex flex-col items-center mt-6 font-sans">
-      <div className="mb-4 text-center text-green-900 text-base font-medium">
+    <div className="w-full">
+      <p className="text-[0.9375rem] leading-relaxed text-ink-soft">
         All orders are made through email. Send us an order request and we will
         answer as soon as possible to arrange your purchase and delivery.
-      </div>
-      <button
-        className="px-6 py-3 border-2 border-emerald-800 text-emerald-800 bg-white rounded-xl font-semibold flex items-center gap-2 hover:bg-emerald-50 hover:border-emerald-900 transition shadow-sm"
-        onClick={handleOpen}
-      >
+      </p>
+
+      <button type="button" onClick={handleOpen} className="btn btn-primary mt-7">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="w-5 h-5"
+          className="h-4 w-4"
+          aria-hidden="true"
         >
           <path
             strokeLinecap="round"
@@ -67,81 +97,186 @@ export default function OrderForm({ productName }) {
         </svg>
         Request Order
       </button>
-      {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-          <form
-            onSubmit={handleSubmit}
-            className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md relative font-sans"
+
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-forest-900/55 p-4 backdrop-blur-sm sm:items-center sm:p-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            onMouseDown={(e) => {
+              if (e.target === e.currentTarget) handleClose();
+            }}
           >
-            <button
-              type="button"
-              className="absolute top-2 right-2 text-gray-400 hover:text-gray-700"
-              onClick={handleClose}
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="order-dialog-title"
+              className="relative my-auto w-full max-w-lg bg-paper shadow-2xl"
+              initial={{ opacity: 0, y: 24, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.98 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             >
-              &times;
-            </button>
-            <h2 className="text-2xl font-bold mb-4 text-center">
-              Request Order: {productName}
-            </h2>
-            <div className="mb-4 text-green-900 text-sm text-center">
-              Fill out the form below. We will contact you by email to confirm
-              your order and arrange payment and delivery.
-            </div>
-            <label className="block mb-2 font-semibold">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-              className="w-full mb-4 px-3 py-2 border rounded-xl"
-            />
-            <label className="block mb-2 font-semibold">Quantity</label>
-            <input
-              type="number"
-              name="quantity"
-              min="1"
-              value={form.quantity}
-              onChange={handleChange}
-              required
-              className="w-full mb-4 px-3 py-2 border rounded-xl"
-            />
-            <label className="block mb-2 font-semibold">Country</label>
-            <input
-              type="text"
-              name="country"
-              value={form.country}
-              onChange={handleChange}
-              required
-              className="w-full mb-4 px-3 py-2 border rounded-xl"
-            />
-            <label className="block mb-2 font-semibold">Address</label>
-            <input
-              type="text"
-              name="address"
-              value={form.address}
-              onChange={handleChange}
-              required
-              className="w-full mb-4 px-3 py-2 border rounded-xl"
-            />
-            <label className="block mb-2 font-semibold">Extra Message</label>
-            <textarea
-              name="message"
-              value={form.message}
-              onChange={handleChange}
-              className="w-full mb-4 px-3 py-2 border rounded-xl"
-              rows={3}
-              placeholder="Any extra info for your order..."
-            />
-            <button
-              type="submit"
-              className="w-full mt-2 px-4 py-2 bg-emerald-800 text-white rounded-xl font-semibold hover:bg-emerald-900 transition"
-            >
-              Send Request
-            </button>
-          </form>
-        </div>
-      )}
+              <button
+                type="button"
+                onClick={handleClose}
+                aria-label="Close"
+                className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center text-muted transition-colors duration-200 hover:text-ink"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                  className="h-5 w-5"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    d="M6 6l12 12M18 6L6 18"
+                  />
+                </svg>
+              </button>
+
+              <div className="px-7 py-9 sm:px-10 sm:py-11">
+                {status === "success" ? (
+                  <div className="py-6 text-center">
+                    <span aria-hidden="true" className="mx-auto mb-7 u-rule" />
+                    <p
+                      id="order-dialog-title"
+                      className="font-display text-3xl font-light leading-snug text-forest-800"
+                    >
+                      Order submitted! We&apos;ll contact you soon.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={handleClose}
+                      className="btn btn-outline mt-9"
+                    >
+                      Close
+                    </button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} noValidate={false}>
+                    <h2
+                      id="order-dialog-title"
+                      className="font-display text-3xl font-light leading-snug text-forest-800"
+                    >
+                      Request Order: {productName}
+                    </h2>
+                    <p className="mt-3 text-sm leading-relaxed text-muted">
+                      Fill out the form below. We will contact you by email to
+                      confirm your order and arrange payment and delivery.
+                    </p>
+
+                    <div className="mt-8 space-y-5">
+                      <div>
+                        <label className="field-label" htmlFor="order-email">
+                          Email
+                        </label>
+                        <input
+                          ref={firstFieldRef}
+                          id="order-email"
+                          type="email"
+                          name="email"
+                          autoComplete="email"
+                          value={form.email}
+                          onChange={handleChange}
+                          required
+                          className="field"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="field-label" htmlFor="order-quantity">
+                          Quantity
+                        </label>
+                        <input
+                          id="order-quantity"
+                          type="number"
+                          name="quantity"
+                          min="1"
+                          value={form.quantity}
+                          onChange={handleChange}
+                          required
+                          className="field"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="field-label" htmlFor="order-country">
+                          Country
+                        </label>
+                        <input
+                          id="order-country"
+                          type="text"
+                          name="country"
+                          autoComplete="country-name"
+                          value={form.country}
+                          onChange={handleChange}
+                          required
+                          className="field"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="field-label" htmlFor="order-address">
+                          Address
+                        </label>
+                        <input
+                          id="order-address"
+                          type="text"
+                          name="address"
+                          autoComplete="street-address"
+                          value={form.address}
+                          onChange={handleChange}
+                          required
+                          className="field"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="field-label" htmlFor="order-message">
+                          Extra Message
+                        </label>
+                        <textarea
+                          id="order-message"
+                          name="message"
+                          value={form.message}
+                          onChange={handleChange}
+                          rows={3}
+                          placeholder="Any extra info for your order..."
+                          className="field resize-none"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="btn btn-primary mt-8 w-full"
+                    >
+                      {loading ? "Sending..." : "Send Request"}
+                    </button>
+
+                    {status === "error" && (
+                      <p
+                        role="alert"
+                        className="mt-5 border border-red-200 bg-red-50 px-4 py-3 text-center text-sm text-red-700"
+                      >
+                        There was an error sending your order. Please try again.
+                      </p>
+                    )}
+                  </form>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

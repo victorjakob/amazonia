@@ -4,6 +4,8 @@ import AboutSection from "@/components/AboutSection";
 import CallToAction from "@/components/CallToAction";
 import { supabase } from "@/utils/supabaseClient";
 
+export const revalidate = 60;
+
 async function getFeaturedProducts() {
   const { data, error } = await supabase
     .from("amazonia_products")
@@ -16,12 +18,13 @@ async function getFeaturedProducts() {
 
 export default async function HomePage() {
   const featured = await getFeaturedProducts();
+
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-green-50 to-white text-gray-900">
+    <>
       <HeroSection />
       <FeaturedProducts products={featured} />
       <AboutSection />
       <CallToAction />
-    </div>
+    </>
   );
 }
