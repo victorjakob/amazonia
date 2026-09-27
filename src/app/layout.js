@@ -2,6 +2,7 @@ import { Cormorant_Garamond, Inter } from "next/font/google";
 import "./globals.css";
 import Topbar from "../components/Topbar";
 import Footer from "../components/Footer";
+import Script from "next/script";
 
 const bodySans = Inter({
   variable: "--font-body-sans",
@@ -81,6 +82,13 @@ export default function RootLayout({ children }) {
         <Topbar />
         <main className="flex-1">{children}</main>
         <Footer />
+        {/* Cloudflare Web Analytics: cookieless page views, read by the Victory Studio dashboard */}
+        <Script
+          id="cf-web-analytics"
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          strategy="afterInteractive"
+          data-cf-beacon='{"token": "bb13d3b6221b4df0b653ee32e0ea87b1"}'
+        />
       </body>
     </html>
   );
